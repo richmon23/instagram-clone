@@ -99,3 +99,8 @@
 .heart-red{
     color:red;
 }
+
+.photo__description{
+    background-color: #f1f2f3;
+    padding-left:7px;
+}
