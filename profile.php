@@ -17,7 +17,7 @@ $us = isset($_GET['profile_for']) ? $_GET['profile_for'] : '';
 <nav class="navigation">
     <a href="feed.php?username=<?php echo $curr_us?>">
         <img 
-            src="images/navLogo.png"
+            src="images/instagram.png"
             alt="logo"
             title="logo"
             class="navigation__logo"
@@ -30,7 +30,7 @@ $us = isset($_GET['profile_for']) ? $_GET['profile_for'] : '';
         <a href="#" class="navigation__link">
             <i class="fa fa-heart-o"></i>
         </a>
-        <a href="profile.php?username=<?php echo $us ?>" class="navigation__link">
+        <a href="username=<?php echo $us ?>" class="navigation__link">
             <i class="fa fa-user-o"></i>
         </a>
     </div>
@@ -57,6 +57,7 @@ $result = mysqli_query($conn,  "SELECT
                                 from users
                                 where username = '$us' "
                       );
+                      
 if ($row = mysqli_fetch_array($result)) {
     $is_follower     = $row['is_follower'] ?? ''; // Default value if null
     $profile_name    = $row['profile_name'] ?? ''; // Default value if null

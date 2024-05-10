@@ -17,7 +17,7 @@
 <nav class="navigation">
     <a href="feed.php?username=<?php echo $us?>">
         <img 
-            src="images/navLogo.png"
+            src="images/instagram.png"
             alt="logo"
             title="logo"
             class="navigation__logo"
@@ -97,8 +97,12 @@
         <div class="photo__info">
             <div class="photo__icons">
                 <span class="photo__icon">
-                    <a href="like.php?is_liked=<?php echo $is_liked ?>&post_id=<?php echo $post_id ?>&username=<?php echo $us ?>">
-                        <?php echo "<i class=\"fa fa-heart-o heart fa-lg\"></i>"; ?>
+                    <a href="like.php?is_liked=<?php echo isset($is_liked) ? $is_liked : 0 ?>&post_id=<?php echo $post_id ?>&username=<?php echo $us ?>">
+                        <?php 
+                            // Check if the photo is liked and apply CSS class accordingly
+                            $heartClass = isset($is_liked) && $is_liked == 1 ? 'fa-heart heart fa-lg' : 'fa-heart-o heart fa-lg';
+                            echo "<i class=\"fa $heartClass\"></i>"; 
+                        ?>
                     </a> 
                     <a href="image-detail.php?post_id=<?php echo $post_id ?>&curr_us=<?php echo $us ?>"> 
                         <i class="fa fa-comment-o fa-lg"></i>

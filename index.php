@@ -12,7 +12,7 @@
         <main class="login">
             <div class="login__column">
                 <img 
-                    src="images/phone.png"
+                    src="images/instagram2.png"
                     alt="Phone Image"
                     title="Phone Image"
                     class="login__phone-image"
@@ -104,7 +104,7 @@
                     <li class="footer__list-item"><a href="#" class="footer__link">language</a></li>
                 </ul>
             </nav>
-            <span class="footer__copyright">© 2017 instagram</span>
+            <span class="footer__copyright">© 2024 instagram</span>
         </footer>
         <script
   src="https://code.jquery.com/jquery-3.2.1.min.js"

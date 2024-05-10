@@ -21,7 +21,7 @@
         <nav class="navigation">
             <a href="index.php">
                 <img 
-                    src="images/navLogo.png"
+                    src="images/instagram.png"
                     alt="logo"
                     title="logo"
                     class="navigation__logo"

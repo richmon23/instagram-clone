@@ -35,16 +35,16 @@
         <nav class="navigation">
             <a href="feed.php?username=<?php echo $username?>">
                 <img 
-                    src="images/navLogo.png"
+                    src="images/instagram.png"
                     alt="logo"
                     title="logo"
                     class="navigation__logo"
                 />
             </a>
-            <div class="navigation__search-container">
+            <!-- <div class="navigation__search-container">
                 <i class="fa fa-search"></i>
                 <input type="text" placeholder="Search">
-            </div>
+            </div> -->
             <div class="navigation__icons">
                 <a href="explore.html" class="navigation__link">
                     <i class="fa fa-compass"></i>
@@ -145,7 +145,7 @@
                     <li class="footer__list-item"><a href="#" class="footer__link">language</a></li>
                 </ul>
             </nav>
-            <span class="footer__copyright">© 2017 instagram</span>
+            <span class="footer__copyright">© 2024 instagram</span>
         </footer>
         <script
   src="https://code.jquery.com/jquery-3.2.1.min.js"

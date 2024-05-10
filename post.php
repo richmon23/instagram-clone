@@ -44,7 +44,7 @@
     <nav class="navigation">
         <a href="feed.php?username=<?php echo $curr_us?>">
             <img 
-                src="images/navLogo.png"
+                src="images/instagram.png"
                 alt="logo"
                 title="logo"
                 class="navigation__logo"
