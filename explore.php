@@ -1,56 +1,13 @@
 <?php
- $curr_us = isset($_GET['curr']) ? $_GET['curr'] : '';
+$curr_us = isset($_GET['curr']) ? $_GET['curr'] : '';
 $for_us = isset($_GET['for']) ? $_GET['for'] : '';
 $get = isset($_GET['get']) ? $_GET['get'] : '';
 
-
-
-?>
-
-
-
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Explore | Instaclone</title>
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-        <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
-        <link href="css/style.css" rel="stylesheet">
-        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    </head>
-    <body>
-        <nav class="navigation">
-            <a href="feed.php?username=<?php echo $curr_us?>">
-                <img 
-                    src="images/instagram.png"
-                    alt="logo"
-                    title="logo"
-                    class="navigation__logo"
-                />
-            </a>
-            <div class="navigation__icons">
-                <a href="explore.html" class="navigation__link">
-                    <i class="fa fa-compass"></i>
-                </a>
-                <a href="#" class="navigation__link">
-                    <i class="fa fa-heart-o"></i>
-                </a>
-                <a href="profile.html" class="navigation__link">
-                    <i class="fa fa-user-o"></i>
-                </a>
-            </div>
-        </nav>
-        <main class="explore">
-            <section class="people">
-                <ul class="people__list">
-
-                <?php
 include_once 'connect.php';
 
 $result = null; // Initialize $result variable
 
-if($get == "followings") {
+if ($get == "followings") {
     $result = mysqli_query($conn, "SELECT
                                         followings.following    AS 'usernamee', 
                                         users.profile_name      AS 'profile_name', 
@@ -66,7 +23,7 @@ if($get == "followings") {
                                     JOIN users
                                     ON followings.following   = users.username
                                     WHERE followings.username = '$for_us'");
-} else if($get == "followers") {
+} else if ($get == "followers") {
     $result = mysqli_query($conn, "SELECT
                                         followings.username     AS 'usernamee',  
                                         users.profile_name      AS 'profile_name',
@@ -82,12 +39,13 @@ if($get == "followings") {
                                     JOIN users
                                     ON followings.username   = users.username
                                     WHERE followings.following = '$for_us'");
-} else if($get == 'search') {
-    if(isset($_POST['search_for']))
+} else if ($get == 'search') {
+    if (isset($_POST['search_for'])) {
         $for_us = $_POST['search_for'];
-    else
+    } else {
         $for_us = $_GET['for'];
-    
+    }
+
     $result = mysqli_query($conn, "SELECT 
                                         users.username 			    AS 'usernamee',
                                         users.profile_name 		    AS 'profile_name',
@@ -104,18 +62,67 @@ if($get == "followings") {
                                                 OR
                                             users.profile_name LIKE '%$for_us%'");
 }
-
-if ($result !== null && mysqli_num_rows($result) > 0) {
-    // Loop through the result set and display each row
-    while($row = mysqli_fetch_array($result)) {
-        // Your existing code for displaying each row goes here
-    }
-} else {
-    echo "No rows found.";
-}
 ?>
 
-                
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Explore | Instaclone</title>
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+        <link href="css/style.css" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    </head>
+    <body>
+        <nav class="navigation">
+            <a href="feed.php?username=<?php echo $curr_us ?>">
+                <img 
+                    src="images/instagram.png"
+                    alt="logo"
+                    title="logo"
+                    class="navigation__logo"
+                />
+            </a>
+            <div class="navigation__icons">
+                <a href="explore.html" class="navigation__link">
+                    <i class="fa fa-compass"></i>
+                </a>
+                <a href="#" class="navigation__link">
+                    <i class="fa fa-heart-o"></i>
+                </a>
+                <a href="profile.php?curr_us=<?php echo $curr_us ?>" class="navigation__link">
+                    <i class="fa fa-user-o"></i>
+                </a>
+            </div>
+        </nav>
+        <main class="explore">
+            <section class="people">
+                <ul class="people__list">
+                <?php
+                if ($result !== null && mysqli_num_rows($result) > 0) {
+                    while ($row = mysqli_fetch_array($result)) {
+                        ?>
+                        <li class="people__list-item">
+                            <a href="profile.php?curr_us=<?php echo $curr_us ?>&profile_for=<?php echo $row['usernamee']; ?>">
+                                <img src="<?php echo $row['profile_picture']; ?>" alt="Profile Picture" class="people__list-item-img" style="width:20%">
+                                <div class="people__list-item-info">
+                                    <span class="people__list-item-name"><?php echo $row['profile_name']; ?></span>
+                                    <span class="people__list-item-username">@<?php echo $row['usernamee']; ?></span>
+                                </div>
+                            </a>
+                            <?php if ($row['isFollowing']) { ?>
+                                <button class="people__list-item-button">Following</button>
+                            <?php } else { ?>
+                                <button class="people__list-item-button">Follow</button>
+                            <?php } ?>
+                        </li>
+                        <?php
+                    }
+                } else {
+                    echo "<li>No rows found.</li>";
+                }
+                ?>
                 </ul>
             </section>
         </main>

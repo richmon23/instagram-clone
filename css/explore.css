@@ -1,5 +1,5 @@
 .people{
-    width:60%;
+    width:40%;
     border-radius: 3px;
     background-color: white;
     border:1px solid rgba(0,0,0,.0975);
@@ -68,4 +68,7 @@
 
 .people__person:hover .people__username img{
     transform: rotate(1turn);
+}
+.people__list-item-img img{
+    width:40%;
 }

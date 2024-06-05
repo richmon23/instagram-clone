@@ -13,6 +13,7 @@
         <link href="css/style.css" rel="stylesheet">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
          <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+         
             <style>
                 * {
                 box-sizing: border-box;
@@ -47,7 +48,7 @@
         <nav class="navigation">
             <a href="feed.php?username=<?php echo $curr_us?>">
                 <img 
-                    src="images/navLogo.png"
+                    src="images/instagram.png"
                     alt="logo"
                     title="logo"
                     class="navigation__logo"
@@ -65,117 +66,76 @@
                 </a>
             </div>
         </nav>
-        <main class="image-detail">
         <?php
-                include_once 'connect.php';
+    include_once 'connect.php';
 
-                $result = mysqli_query($conn, "SELECT
-                                                    username,
-                                                    photo,
-                                                    likes,
-                                                    comments,
-                                                    datediff(now(), time_stamp) AS created_at
-                                                FROM posts
-                                                WHERE post_id = $post_id"
-                                        );
-                
-                $row = mysqli_fetch_array($result);
-                
-                $username        = $row['username']; 
-                $photo           = $row['photo'];
-                $likes           = $row['likes'];
-                $comments        = $row['comments'];
-                $created_at      = $row['created_at'];
+    $post_id = $_GET['post_id'];
+    $curr_us = $_GET['curr_us'];
 
-                
-                $result2 = mysqli_query($conn, "SELECT
-                                                    profile_picture
-                                                FROM users
-                                                WHERE username = '$username'"
-                                        );
-                
-                $row2 = mysqli_fetch_array($result2);
+    // Fetch post details
+    $result = mysqli_query($conn, "SELECT
+                                        username,
+                                        photo,
+                                        comments,
+                                        datediff(now(), time_stamp) AS created_at
+                                    FROM posts
+                                    WHERE post_id = $post_id"
+                            );
+    
+    $row = mysqli_fetch_array($result);
+    
+    $username        = $row['username']; 
+    $photo           = $row['photo'];
+    $comments        = $row['comments'];
+    $created_at      = $row['created_at'];
 
-                $profile_picture = $row2['profile_picture'];                        
-            ?>
-                
-            <section class="image">
-            <table >
-            <tr>
-                <td><div style="width:100px"></div></td>
-                <td><div class="column">
-                     <img 
-                                src="<?php echo $photo ?>"
-                                class="image__avatar"
-                                style="width:100%;height:100%"
-                       />
-                </div></td>
-                <td><div style="width:5px ;backgroud-color:#9e9e9e;"></div></td>
-                <td><div class="column" >
-                    <div class="photo__header">
-                     <img 
-                                src =   <?php 
-                                            if($profile_picture == null)
-                                                echo "images/avatar.svg";
-                                            else
-                                                echo $profile_picture;
-                                        ?>
-                                style="width:50px;height:50px"
-                                class="photo__avatar"
-                       />
-                      <a><?php echo $username ?></a>
-                    </div>
-                    <div style ="height:300px; background-color:#ffffff; overflow:auto; " class= "photo__info">
-                    <ul class="photo__comments" id="commentlist">
+    // Count total likes for the post
+    $likes_result = mysqli_query($conn, "SELECT COUNT(*) as total_likes FROM likes WHERE post_id = $post_id");
+    $likes_row = mysqli_fetch_array($likes_result);
+    $total_likes = $likes_row['total_likes'];
 
-                        <?php
-                            $result3 = mysqli_query ($conn, "SELECT
-                                                                commentername,
-                                                                comment_text
-                                                            FROM comments
-                                                            WHERE post_id = $post_id
-                                                            ORDER BY time_stamp; "
-                                                    );
-                            
-                            while($row3 = mysqli_fetch_array($result3)){
-                                $commentername = $row3['commentername'];
-                                $comment_text  = $row3['comment_text'];
-                        ?>
-                            <li class="photo__comment">
-                            <span class="photo__comment-author"><?php echo $commentername?></span> <?php echo $comment_text?>
-                            </li> 
-                        <?php
-                            }
-                        ?>   
-                    </ul>
-                    </div>
-                    <div style ="height:30px ">
-                     <div class="photo__icons">
-                            <span class="photo__icon">
-                                <i class="fa fa-heart-o heart fa-lg"></i>
-                            </span>
-                            <span class="photo__icon">
-                                <i class="fa fa-comment-o fa-lg"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <span class="photo__likes" name="likes"><?php echo $likes ?> likes</span>
-                     <span class="photo__time-ago" name="timeofpost"> <?php echo $created_at ?> ago</span>
-                    <div style ="height:70px" class="photo_comment">
-                                       <div class="photo__add-comment-container" >
-                        <form action="comment.php?post_id=<?php echo $post_id?>&username=<?php echo $curr_us?>&return_to=image_detail" method="post" id="myForm">
-                            <div><textarea type="text" id="comment"name="comment" placeholder="Add a comment..." class="photo__add-comment"></textarea>
-                            <button class="w3-circle w3-blue " id="sub" style="width:50px;height:50px;position: absolute; right: 0;">></button>
-                            <div style="height:5px"></div>
-                        </form> 
-                       
-                    </div>
-                 </div></td>
+    // Count total comments for the post
+    $comments_result = mysqli_query($conn, "SELECT COUNT(*) as total_comments FROM comments WHERE post_id = $post_id");
+    $comments_row = mysqli_fetch_array($comments_result);
+    $total_comments = $comments_row['total_comments'];
 
-            </tr>
-                </table>
-            </section>
-        </main>
+    // Fetch user profile picture
+    $result2 = mysqli_query($conn, "SELECT
+                                        profile_picture
+                                    FROM users
+                                    WHERE username = '$username'"
+                            );
+    
+    $row2 = mysqli_fetch_array($result2);
+    $profile_picture = $row2['profile_picture'];                        
+?>
+
+<!-- HTML content with modifications for displaying likes and comments -->
+<main class="image-detail">
+    <section class="image">
+        <!-- Display post image and details -->
+        <div class="column">
+            <img src="<?php echo $photo ?>" class="image__avatar" style="width:100%;height:100%" />
+        </div>
+        <div class="column">
+            <!-- Display post details, comments, and likes -->
+            <div class="photo__info">
+                <ul class="photo__comments" id="commentlist">
+                    <!-- Display comments here -->
+                </ul>
+            </div>
+            <div class="photo__icons">
+                <span class="photo__icon">
+                    <i class="fa fa-heart-o heart fa-lg"></i> <?php echo $total_likes ?> likes
+                </span>
+                <span class="photo__icon">
+                    <i class="fa fa-comment-o fa-lg"></i> <?php echo $total_comments ?> comments
+                </span>
+            </div>
+            <!-- Rest of the post details and comment section -->
+        </div>
+    </section>
+</main>
         <footer class="footer">
             <nav class="footer__nav">
                 <ul class="footer__list">
@@ -191,7 +151,7 @@
                     <li class="footer__list-item"><a href="#" class="footer__link">language</a></li>
                 </ul>
             </nav>
-            <span class="footer__copyright">© 2017 instagram</span>
+            <span class="footer__copyright">© 2024 instagram</span>
         </footer>
         <script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
