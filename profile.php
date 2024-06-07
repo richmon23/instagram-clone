@@ -30,7 +30,7 @@ $us = isset($_GET['profile_for']) ? $_GET['profile_for'] : '';
         <a href="#" class="navigation__link">
             <i class="fa fa-heart-o"></i>
         </a>
-        <a href="username=<?php echo $us ?>" class="navigation__link">
+        <a href="profile.php?username=<?php echo $us ?>" class="navigation__link">
             <i class="fa fa-user-o"></i>
         </a>
     </div>
@@ -57,7 +57,7 @@ $result = mysqli_query($conn,  "SELECT
                                 from users
                                 where username = '$us' "
                       );
-                      
+
 if ($row = mysqli_fetch_array($result)) {
     $is_follower     = $row['is_follower'] ?? ''; // Default value if null
     $profile_name    = $row['profile_name'] ?? ''; // Default value if null
@@ -129,10 +129,9 @@ if ($row = mysqli_fetch_array($result)) {
     
     <div class="profile__pictures">
         <?php
-        include_once 'connect.php';
         $result = mysqli_query($conn, "SELECT 
                                             post_id,
-                                            photo,
+                                            photos,
                                             likes,
                                             comments,
                                             datediff(now(), time_stamp) AS created_at
@@ -141,18 +140,25 @@ if ($row = mysqli_fetch_array($result)) {
                                         ORDER BY time_stamp DESC; "
                                );
 
-        while($row = mysqli_fetch_array($result)){
+        if ($result) {
+            while($row = mysqli_fetch_array($result)){
+                $post_id    =  $row['post_id'];
+                $photos     =  json_decode($row['photos']); // Decode JSON array
+                $likes      =  $row['likes'];
+                $comments   =  $row['comments'];
+                $created_at =  $row['created_at'];
 
-            $post_id         =  $row['post_id'];
-            $photo           =  $row['photo'];
-            $likes           =  $row['likes'];
-            $comments        =  $row['comments'];
-            $created_at      =  $row['created_at'];
+                // Display debug information
+                // echo "<pre>";
+                // print_r($photos);
+                // echo "</pre>";
+
+                foreach ($photos as $photo) {
         ?>
             <a href="image-detail.php?post_id=<?php echo $post_id ?>&curr_us=<?php echo $curr_us?>" class="profile-picture">
                 <img
-                    height = "300"
-                    width = "300"
+                    height="300"
+                    width="300"
                     src="<?php echo $photo ?>"
                     class="profile-picture__picture"
                 />
@@ -166,6 +172,10 @@ if ($row = mysqli_fetch_array($result)) {
                 </div>
             </a>
         <?php
+                }
+            }
+        } else {
+            echo "Error fetching posts: " . mysqli_error($conn);
         }
         ?>
     </div>

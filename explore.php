@@ -112,9 +112,9 @@ if ($get == "followings") {
                                 </div>
                             </a>
                             <?php if ($row['isFollowing']) { ?>
-                                <button class="people__list-item-button">Following</button>
+                                <!-- <button class="people__list-item-button">Following</button> -->
                             <?php } else { ?>
-                                <button class="people__list-item-button">Follow</button>
+                                <!-- <button class="people__list-item-button">Follow</button> -->
                             <?php } ?>
                         </li>
                         <?php

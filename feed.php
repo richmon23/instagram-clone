@@ -5,24 +5,44 @@
     <title>Feed | Instaclone</title>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
     <link href="css/style.css" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, 1.0, maximum-scale=1.0, minimum-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-</head> 
+    <style>
+        .photo__file-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .photo__file-wrapper {
+            flex: 1 1 calc(33.333% - 10px);
+            box-sizing: border-box;
+        }
+
+        .photo__file {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+</head>
 <body>
 <?php
     include_once 'connect.php';
     $us = $_GET['username'];
 
-    // Check for new notifications
     $notificationQuery = "SELECT COUNT(*) AS new_notifications FROM notifications WHERE username = '$us' AND seen = 0";
     $notificationResult = mysqli_query($conn, $notificationQuery);
     if ($notificationResult) {
         $notificationRow = mysqli_fetch_assoc($notificationResult);
         $newNotifications = $notificationRow['new_notifications'] > 0;
     } else {
-        $newNotifications = false; // Default to false if query fails
+        $newNotifications = false;
     }
+    
+    // Set the timezone to Manila
+    date_default_timezone_set('Asia/Manila');
 ?>
 
 <nav class="navigation">
@@ -91,7 +111,7 @@
     <?php
         $result = mysqli_query($conn, "SELECT 
                                             posts.post_id AS post_id,
-                                            posts.photo AS photo, 
+                                            posts.photos AS photos, 
                                             posts.likes AS likes,
                                             posts.comments AS comments_count,
                                             posts.time_stamp AS created_at,
@@ -107,11 +127,16 @@
             $follower       = $row['follower'];
             $following_dp   = $row['following_dp'];
             $post_id        = $row['post_id'];
-            $photo          = $row['photo'];
+            $photos         = json_decode($row['photos'], true); // Decode the JSON-encoded photos as an array
             $likes          = $row['likes'];
             $comments_count = $row['comments_count'];
-            $created_at     = $row['created_at'];
+            $created_at     = date("Y-m-d H:i:s"); // Set the current date and time in Manila timezone
             $description    = $row['description'];
+
+            // Ensure $photos is an array
+            if (!is_array($photos)) {
+                $photos = [];
+            }
     ?>
     <section class="photo">
         <header class="photo__header">
@@ -128,9 +153,13 @@
         <div class="photo__description"><?php echo "Your Content:", $description; ?></div>
         <div class="photo__info">
             <div class="photo__file-container">
-                <a href="image-detail.php?post_id=<?php echo $post_id ?>&curr_us=<?php echo $us ?>"> 
-                    <img class="photo__file" src="<?php echo $photo ?>" >
-                </a>
+                <?php foreach ($photos as $photo): ?>
+                <div class="photo__file-wrapper">
+                    <a href="image-detail.php?post_id=<?php echo $post_id ?>&curr_us=<?php echo $us ?>"> 
+                        <img class="photo__file" src="<?php echo $photo; ?>" >
+                    </a>
+                </div>
+                <?php endforeach; ?>
             </div>
             <div class="photo__icons">
                 <span class="photo__icon">
@@ -141,11 +170,9 @@
                         ?>
                     </a> 
                     <a href="image-detail.php?post_id=<?php echo $post_id ?>&curr_us=<?php echo $us ?>"> 
-                        <i class="far fa-comment-o fa-lg"></i>
-                        <?php echo $comments_count; // Display comment count ?>
+                        <i class="far fa-comment fa-lg"></i>
+                        <?php echo $comments_count; ?>
                     </a>
-                   
-
                 </span>
             </div>
             <span class="photo__likes"><?php echo $likes ?> likes</span>
