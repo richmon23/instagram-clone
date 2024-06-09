@@ -43,6 +43,17 @@ if (!empty($comment)) {
 
         // Update comments count in the posts table
         $increment_comments = mysqli_query($conn, "UPDATE posts SET comments = comments + 1 WHERE post_id = '$post_id'");
+
+        // Create notification
+        $post_owner_query = "SELECT username FROM posts WHERE post_id = $post_id";
+        $post_owner_result = mysqli_query($conn, $post_owner_query);
+        $post_owner_row = mysqli_fetch_assoc($post_owner_result);
+        $post_owner = $post_owner_row['username'];
+
+        if ($post_owner != $username) {
+            $notification_query = "INSERT INTO notifications(username, type, post_id, triggered_by) VALUES ('$post_owner', 'comment', $post_id, '$username')";
+            mysqli_query($conn, $notification_query);
+        }
     } else {
         // Handle the case where post_id does not exist
         echo "Error: Post does not exist.";

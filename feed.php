@@ -1,3 +1,23 @@
+<?php
+include_once 'connect.php';
+$us = $_GET['username'];
+
+// Check for new notifications
+$notificationQuery = "SELECT COUNT(*) AS new_notifications FROM notifications WHERE username = '$us' AND seen = 0";
+$notificationResult = mysqli_query($conn, $notificationQuery);
+if ($notificationResult) {
+    $notificationRow = mysqli_fetch_assoc($notificationResult);
+    $newNotifications = $notificationRow['new_notifications'] > 0;
+} else {
+    $newNotifications = false;
+}
+
+// Set the timezone to Manila
+date_default_timezone_set('Asia/Manila');
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -108,6 +128,8 @@
 </aside>
 
 <main class="feed">
+
+    
     <?php
         $result = mysqli_query($conn, "SELECT 
                                             posts.post_id AS post_id,

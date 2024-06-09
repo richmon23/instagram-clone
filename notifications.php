@@ -16,6 +16,7 @@ $notificationResult = mysqli_query($conn, $notificationQuery);
 <head>
     <meta charset="UTF-8">
     <title>Notifications | Instaclone</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -23,14 +24,21 @@ $notificationResult = mysqli_query($conn, $notificationQuery);
         <!-- Your navigation code here -->
     </nav>
     <main>
-        <h1>Notifications</h1>
-        <ul>
-            <?php
-            while ($notification = mysqli_fetch_assoc($notificationResult)) {
-                echo "<li>{$notification['type']} notification at {$notification['created_at']}</li>";
-            }
-            ?>
-        </ul>
+        <center>
+            <h1>Notifications</h1>
+            <ul>
+                <?php
+                while ($notification = mysqli_fetch_assoc($notificationResult)) {
+                    $post_id = $notification['post_id'];
+                    $type = $notification['type'];
+                    $triggered_by = $notification['triggered_by'];
+                    $created_at = $notification['created_at'];
+                    
+                    echo "<li><a href='image-detail.php?post_id=$post_id&curr_us=$username'>$triggered_by $type your post at $created_at</a></li>";
+                }
+                ?>
+            </ul>
+        </center>
     </main>
 </body>
 </html>
